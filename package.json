@@ -1,6 +1,6 @@
 {
   "name": "covid19-us-wa",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "covid19 data scrapper for a state of Washington",
   "main": "built/src/index.js",
   "scripts": {
@@ -27,6 +27,7 @@
   },
   "dependencies": {
     "@types/mocha": "^7.0.2",
-    "chai": "^4.2.0"
+    "chai": "^4.2.0",
+    "debug": "^4.1.1"
   }
 }
