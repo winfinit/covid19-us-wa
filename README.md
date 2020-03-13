@@ -7,6 +7,8 @@
 "covid19-us-wa" is a library that retrieves current published COVID-19 data from 
 the Washington State Department of Health website. Data is starting March 11, 2020. Data is not updated daily but history will be blank if no update is provided on that particular date.
 
+Data is retrieved daily from https://www.doh.wa.gov/emergencies/coronavirus
+
 ## Usage
 
 ### Node.js
@@ -85,9 +87,3 @@ covid19USWA.getCurrentData().then((data: ICovid19USWAHistory) => {
     console.log(data);
 }); 
 ```
-
-
-## NOTE
-
-currently library is using static files that are scraped manually, next 
-version will pull them from some other place

@@ -26,6 +26,8 @@ export interface ICovid19USWAStatNode {
 export declare class Covid19USWA {
     CURRENT_FILE: string;
     DATA_URL: string;
+    CURRENT_URL: string;
+    HISTORY_URL: string;
     debug: any;
     constructor();
     getURI(): string;

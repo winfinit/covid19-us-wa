@@ -34,6 +34,9 @@ export interface ICovid19USWAStatNode {
 export class Covid19USWA {
     CURRENT_FILE: string = "../data/current.json";
     DATA_URL: string = "https://www.doh.wa.gov/emergencies/coronavirus";
+    CURRENT_URL: string = "https://nlt-other.s3.amazonaws.com/current.json";
+    HISTORY_URL: string = "https://nlt-other.s3.amazonaws.com/history.json";
+    
     debug: any;
     
     constructor() {
@@ -66,20 +69,45 @@ export class Covid19USWA {
     
     getCurrentData(): Promise<ICovid19USWACurrent> {
         return new Promise<ICovid19USWACurrent>((resolve, reject) => {
-            let inflatedData: ICovid19USWACurrent = require('../../data/current.json');
-            resolve(inflatedData);
+            https.get(this.CURRENT_URL, (res) => {
+                let body: string = "";
+                this.debug("status code", res.statusCode);
+                res.on("data", (data) => {
+                    body += data;
+                })
+                res.on("end", () => {
+                    let waData: ICovid19USWACurrent = JSON.parse(body);
+                    this.debug("Body response", waData);
+                    resolve(waData);
+                });
+            }).on('error', (e) => {
+                console.error(e);
+                reject(e);
+            });
         });
     }
     
     getHistoryData(): Promise<ICovid19USWAHistory> {
         return new Promise<ICovid19USWAHistory>((resolve, reject) => {
-            let inflatedData: ICovid19USWAHistory = require('../../data/history.json');
-            resolve(inflatedData);
+            https.get(this.HISTORY_URL, (res) => {
+                let body: string = "";
+                this.debug("status code", res.statusCode);
+                res.on("data", (data) => {
+                    body += data;
+                })
+                res.on("end", () => {
+                    let waData: ICovid19USWAHistory = JSON.parse(body);
+                    this.debug("Body response", waData);
+                    resolve(waData);
+                });
+            }).on('error', (e) => {
+                console.error(e);
+                reject(e);
+            });
         });
     }
     
     extractHTMLData(html: string): any {
         return html;
     }
-    
 }

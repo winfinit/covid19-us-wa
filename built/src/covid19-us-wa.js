@@ -9,6 +9,8 @@ var Covid19USWA = /** @class */ (function () {
     function Covid19USWA() {
         this.CURRENT_FILE = "../data/current.json";
         this.DATA_URL = "https://www.doh.wa.gov/emergencies/coronavirus";
+        this.CURRENT_URL = "https://nlt-other.s3.amazonaws.com/current.json";
+        this.HISTORY_URL = "https://nlt-other.s3.amazonaws.com/history.json";
         this.debug = Debug("Covid19USWA");
     }
     Covid19USWA.prototype.getURI = function () {
@@ -34,15 +36,43 @@ var Covid19USWA = /** @class */ (function () {
         });
     };
     Covid19USWA.prototype.getCurrentData = function () {
+        var _this = this;
         return new Promise(function (resolve, reject) {
-            var inflatedData = require('../../data/current.json');
-            resolve(inflatedData);
+            https_1.default.get(_this.CURRENT_URL, function (res) {
+                var body = "";
+                _this.debug("status code", res.statusCode);
+                res.on("data", function (data) {
+                    body += data;
+                });
+                res.on("end", function () {
+                    var waData = JSON.parse(body);
+                    _this.debug("Body response", waData);
+                    resolve(waData);
+                });
+            }).on('error', function (e) {
+                console.error(e);
+                reject(e);
+            });
         });
     };
     Covid19USWA.prototype.getHistoryData = function () {
+        var _this = this;
         return new Promise(function (resolve, reject) {
-            var inflatedData = require('../../data/history.json');
-            resolve(inflatedData);
+            https_1.default.get(_this.HISTORY_URL, function (res) {
+                var body = "";
+                _this.debug("status code", res.statusCode);
+                res.on("data", function (data) {
+                    body += data;
+                });
+                res.on("end", function () {
+                    var waData = JSON.parse(body);
+                    _this.debug("Body response", waData);
+                    resolve(waData);
+                });
+            }).on('error', function (e) {
+                console.error(e);
+                reject(e);
+            });
         });
     };
     Covid19USWA.prototype.extractHTMLData = function (html) {
