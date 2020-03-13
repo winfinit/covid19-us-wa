@@ -1,0 +1,32 @@
+{
+  "name": "covid19-us-wa",
+  "version": "1.0.0",
+  "description": "covid19 data scrapper for a state of Washington",
+  "main": "built/src/index.js",
+  "scripts": {
+    "test": "mocha --recursive built/test/",
+    "clean-build": "rm -Rf built/ && tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/winfinit/covid19-us-wa.git"
+  },
+  "keywords": [
+    "covid19",
+    "coronavirus"
+  ],
+  "author": "Roman Jurkov <winfinit@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/winfinit/covid19-us-wa/issues"
+  },
+  "homepage": "https://github.com/winfinit/covid19-us-wa#readme",
+  "devDependencies": {
+    "mocha": "^7.1.0",
+    "typescript": "^3.8.3"
+  },
+  "dependencies": {
+    "@types/mocha": "^7.0.2",
+    "chai": "^4.2.0"
+  }
+}

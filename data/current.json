@@ -1,0 +1,65 @@
+{
+	"county": {
+		"Clark": {
+			"positive": 1,
+			"deaths": 0
+		},
+		"Grant": {
+			"positive": 1,
+			"deaths": 1
+		},
+		"Island": {
+			"positive": 1,
+			"deaths": 0
+		},
+		"Jefferson": {
+			"positive": 1,
+			"deaths": 0
+		},
+		"King": {
+			"positive": 236,
+			"deaths": 26
+		},
+		"Kitsap": {
+			"positive": 2,
+			"deaths": 0
+		},
+		"Kittitas": {
+			"positive": 2,
+			"deaths": 0
+		},
+		"Pierce": {
+			"positive": 17,
+			"deaths": 0
+		},
+		"Skagit": {
+			"positive": 1,
+			"deaths": 0
+		},
+		"Snohomish": {
+			"positive": 68,
+			"deaths": 2
+		},
+		"Thurston": {
+			"positive": 1,
+			"deaths": 0
+		},
+		"Whatcom": {
+			"positive": 1,
+			"deaths": 0
+		},
+		"Unassigned": {
+			"positive": 36,
+			"deaths": 0
+		}
+    },
+    "total": {
+        "positive": 366,
+        "deaths": 29
+    },
+	"total_tests": {
+		"positive": 366,
+		"negative": 3037
+	},
+	"last_updated": "03/11/2020 2:25PM PDT"
+}
