@@ -9,6 +9,20 @@ the Washington State Department of Health website. Data is starting March 11, 20
 
 Data is retrieved daily from https://www.doh.wa.gov/emergencies/coronavirus
 
+## Methods
+
+#### getCurrentData()
+
+Returns latest data from the states site
+
+#### getHistoryData()
+
+Returns historic data, including latest update.
+
+#### getShortHistoryData()
+
+Returns abbreviated historic data by removing county key.
+
 ## Usage
 
 ### Node.js
@@ -67,6 +81,19 @@ covid19USWA.getHistoryData().then(data => {
         }
     */
 });
+
+covid19USWA.getShortHistoryData().then(data => {
+    console.log("data", data);
+    /* 
+        Sample output:
+        { '03/11/2020':
+            {
+                total: { positive: 366, deaths: 29 },
+                total_tests: { positive: 366, negative: 3037 } },
+            last_updated: '03/11/2020 2:25PM PDT' 
+        }
+    */
+});
 ```
 
 ### TypeScript
@@ -75,7 +102,8 @@ covid19USWA.getHistoryData().then(data => {
 import {
     Covid19USWA,
     ICovid19USWACurrent,
-    ICovid19USWAHistory
+    ICovid19USWAHistory,
+    ICovid19USWAShortHistory
 } from 'covid19-us';
 
 let covid19USWA = new Covid19USWA();
@@ -83,7 +111,11 @@ covid19USWA.getCurrentData().then((data: ICovid19USWACurrent) => {
     console.log(data);
 }); 
 
-covid19USWA.getCurrentData().then((data: ICovid19USWAHistory) => {
+covid19USWA.getHistoryData().then((data: ICovid19USWAHistory) => {
+    console.log(data);
+}); 
+
+covid19USWA.getShortHistoryData().then((data: ICovid19USWAShortHistory) => {
     console.log(data);
 }); 
 ```

@@ -1,5 +1,5 @@
 {
-	"county": {
+    "county": {
 		"Clark": {
 			"positive": 1,
 			"deaths": 0
@@ -8,8 +8,12 @@
 			"positive": 1,
 			"deaths": 1
 		},
-		"Island": {
+		"GraysHarbor": {
 			"positive": 1,
+			"deaths": 0
+		},
+		"Island": {
+			"positive": 3,
 			"deaths": 0
 		},
 		"Jefferson": {
@@ -17,15 +21,15 @@
 			"deaths": 0
 		},
 		"King": {
-			"positive": 236,
-			"deaths": 26
+			"positive": 270,
+			"deaths": 27
 		},
 		"Kitsap": {
 			"positive": 2,
 			"deaths": 0
 		},
 		"Kittitas": {
-			"positive": 2,
+			"positive": 3,
 			"deaths": 0
 		},
 		"Pierce": {
@@ -33,12 +37,12 @@
 			"deaths": 0
 		},
 		"Skagit": {
-			"positive": 1,
+			"positive": 2,
 			"deaths": 0
 		},
 		"Snohomish": {
-			"positive": 68,
-			"deaths": 2
+			"positive": 108,
+			"deaths": 3
 		},
 		"Thurston": {
 			"positive": 1,
@@ -49,17 +53,17 @@
 			"deaths": 0
 		},
 		"Unassigned": {
-			"positive": 36,
+			"positive": 46,
 			"deaths": 0
 		}
-    },
-    "total": {
-        "positive": 366,
-        "deaths": 29
-    },
-	"total_tests": {
-		"positive": 366,
-		"negative": 3037
 	},
-	"last_updated": "03/11/2020 2:25PM PDT"
+	"total": {
+		"positive": 457,
+		"deaths": 31
+	},
+	"total_tests": {
+		"positive": 457,
+		"negative": 4350
+	},
+	"last_updated": "03/12/2020 5:00PM PDT"
 }

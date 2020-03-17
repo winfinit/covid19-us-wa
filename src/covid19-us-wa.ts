@@ -23,6 +23,16 @@ export interface ICovid19USWAHistory {
     };
 }
 
+export interface ICovid19USWAShortHistory {
+    [date: string]: {
+        "total": ICovid19USWAStatNode;
+        "total_tests": {
+            "positive": number,
+            "negative": number
+        };
+    };
+}
+
 export interface ICovid19USWAStatNode {
     [county: string]: {
         positive: number,
@@ -36,6 +46,7 @@ export class Covid19USWA {
     DATA_URL: string = "https://www.doh.wa.gov/emergencies/coronavirus";
     CURRENT_URL: string = "https://nlt-other.s3.amazonaws.com/current.json";
     HISTORY_URL: string = "https://nlt-other.s3.amazonaws.com/history.json";
+    SHORT_HISTORY_URL: string = "https://nlt-other.s3.amazonaws.com/short_history.json";
     
     debug: any;
     
@@ -97,6 +108,26 @@ export class Covid19USWA {
                 })
                 res.on("end", () => {
                     let waData: ICovid19USWAHistory = JSON.parse(body);
+                    this.debug("Body response", waData);
+                    resolve(waData);
+                });
+            }).on('error', (e) => {
+                console.error(e);
+                reject(e);
+            });
+        });
+    }
+
+    getShortHistoryData(): Promise<ICovid19USWAShortHistory> {
+        return new Promise<ICovid19USWAShortHistory>((resolve, reject) => {
+            https.get(this.SHORT_HISTORY_URL, (res) => {
+                let body: string = "";
+                this.debug("status code", res.statusCode);
+                res.on("data", (data) => {
+                    body += data;
+                })
+                res.on("end", () => {
+                    let waData: ICovid19USWAShortHistory = JSON.parse(body);
                     this.debug("Body response", waData);
                     resolve(waData);
                 });

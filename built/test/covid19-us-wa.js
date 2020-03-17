@@ -25,5 +25,11 @@ describe('covid19USWA class', function () {
             expect(data).to.be.an("object");
         });
     });
+    it('should return short history info for WA', function () {
+        var covid19USWA = new covid19_us_wa_1.Covid19USWA();
+        covid19USWA.getShortHistoryData().then(function (data) {
+            expect(data).to.be.an("object");
+        });
+    });
 });
 //# sourceMappingURL=covid19-us-wa.js.map

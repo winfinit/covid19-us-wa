@@ -2,7 +2,8 @@ var expect = require('chai').expect;
 import {
     Covid19USWA,
     ICovid19USWACurrent,
-    ICovid19USWAHistory
+    ICovid19USWAHistory,
+    ICovid19USWAShortHistory
 } from '../src/covid19-us-wa';
 
 describe('covid19USWA class', function() {
@@ -32,7 +33,13 @@ describe('covid19USWA class', function() {
         covid19USWA.getHistoryData().then((data: ICovid19USWAHistory) => {
             expect(data).to.be.an("object");
         });       
-        
+    });
+
+    it('should return short history info for WA', function(){
+        let covid19USWA = new Covid19USWA();
+        covid19USWA.getShortHistoryData().then((data: ICovid19USWAShortHistory) => {
+            expect(data).to.be.an("object");
+        });       
     });
 
 });
