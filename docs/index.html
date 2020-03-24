@@ -1,0 +1,584 @@
+<!doctype html>
+<html>
+
+<head>
+    <title>Line Chart</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"   integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="   crossorigin="anonymous"></script>
+    <style>
+        canvas {
+            -moz-user-select: none;
+            -webkit-user-select: none;
+            -ms-user-select: none;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>COVID19 Data for United States, Washington</h1>
+    <div style="width:1000px">
+        <canvas id="chart1"></canvas>
+    </div>
+    <br>
+    <div style="width:1000px">
+        <canvas id="chart3"></canvas>
+    </div>
+    <br>
+    <div style="width:1000px">
+        <canvas id="chart2"></canvas>
+    </div>
+    <br>
+    <div style="width:1000px">
+        <canvas id="chart4"></canvas>
+    </div>
+    <br>
+    <br>
+    Chart Type:
+    <select id="type">
+        <option value="bar">Bar</option>
+        <option value="line">Line</option>
+    </select>
+    <select id="unit">
+        <option value="day" selected>Day</option>
+        <option value="month">Month</option>
+        <option value="year">Year</option>
+    </select>
+    <button id="update">update</button>
+    <script>
+        'use strict';
+        
+        window.chartColors = {
+            red: 'rgb(255, 99, 132)',
+            orange: 'rgb(255, 159, 64)',
+            yellow: 'rgb(255, 205, 86)',
+            green: 'rgb(75, 192, 192)',
+            blue: 'rgb(54, 162, 235)',
+            purple: 'rgb(153, 102, 255)',
+            grey: 'rgb(201, 203, 207)'
+        };
+        
+        (function(global) {
+            var MONTHS = [
+            'January',
+            'February',
+            'March',
+            'April',
+            'May',
+            'June',
+            'July',
+            'August',
+            'September',
+            'October',
+            'November',
+            'December'
+            ];
+            
+            var COLORS = [
+            '#4dc9f6',
+            '#f67019',
+            '#f53794',
+            '#537bc4',
+            '#acc236',
+            '#166a8f',
+            '#00a950',
+            '#58595b',
+            '#8549ba'
+            ];
+            
+            var Samples = global.Samples || (global.Samples = {});
+            var Color = global.Color;
+            
+            Samples.utils = {
+                // Adapted from http://indiegamr.com/generate-repeatable-random-numbers-in-js/
+                srand: function(seed) {
+                    this._seed = seed;
+                },
+                
+                rand: function(min, max) {
+                    var seed = this._seed;
+                    min = min === undefined ? 0 : min;
+                    max = max === undefined ? 1 : max;
+                    this._seed = (seed * 9301 + 49297) % 233280;
+                    return min + (this._seed / 233280) * (max - min);
+                },
+                
+                numbers: function(config) {
+                    var cfg = config || {};
+                    var min = cfg.min || 0;
+                    var max = cfg.max || 1;
+                    var from = cfg.from || [];
+                    var count = cfg.count || 8;
+                    var decimals = cfg.decimals || 8;
+                    var continuity = cfg.continuity || 1;
+                    var dfactor = Math.pow(10, decimals) || 0;
+                    var data = [];
+                    var i, value;
+                    
+                    for (i = 0; i < count; ++i) {
+                        value = (from[i] || 0) + this.rand(min, max);
+                        if (this.rand() <= continuity) {
+                            data.push(Math.round(dfactor * value) / dfactor);
+                        } else {
+                            data.push(null);
+                        }
+                    }
+                    
+                    return data;
+                },
+                
+                labels: function(config) {
+                    var cfg = config || {};
+                    var min = cfg.min || 0;
+                    var max = cfg.max || 100;
+                    var count = cfg.count || 8;
+                    var step = (max - min) / count;
+                    var decimals = cfg.decimals || 8;
+                    var dfactor = Math.pow(10, decimals) || 0;
+                    var prefix = cfg.prefix || '';
+                    var values = [];
+                    var i;
+                    
+                    for (i = min; i < max; i += step) {
+                        values.push(prefix + Math.round(dfactor * i) / dfactor);
+                    }
+                    
+                    return values;
+                },
+                
+                months: function(config) {
+                    var cfg = config || {};
+                    var count = cfg.count || 12;
+                    var section = cfg.section;
+                    var values = [];
+                    var i, value;
+                    
+                    for (i = 0; i < count; ++i) {
+                        value = MONTHS[Math.ceil(i) % 12];
+                        values.push(value.substring(0, section));
+                    }
+                    
+                    return values;
+                },
+                
+                color: function(index) {
+                    return COLORS[index % COLORS.length];
+                },
+                
+                transparentize: function(color, opacity) {
+                    var alpha = opacity === undefined ? 0.5 : 1 - opacity;
+                    return Color(color).alpha(alpha).rgbString();
+                }
+            };
+            
+            // DEPRECATED
+            window.randomScalingFactor = function() {
+                return Math.round(Samples.utils.rand(-100, 100));
+            };
+            
+            // INITIALIZATION
+            
+            Samples.utils.srand(Date.now());
+            
+            // Google Analytics
+            /* eslint-disable */
+            if (document.location.hostname.match(/^(www\.)?chartjs\.org$/)) {
+                (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+                })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+                ga('create', 'UA-28909194-3', 'auto');
+                ga('send', 'pageview');
+            }
+            /* eslint-enable */
+            
+        }(this));      
+        $.getJSON('https://nlt-other.s3.amazonaws.com/short_history.json', function(short_history) {
+            function generateData() {
+                
+                
+                let returnData = [];
+                Object.keys(short_history).forEach((key) => {
+                    if ( /^\d\d\d\d-/.test(key) === false ) {
+                        //skipping keys that do not look like dates
+                        return;
+                    }
+                    let splitDate = key.split("-");
+                    let date = new Date(splitDate[0], splitDate[1] - 1, splitDate[2]);
+                    let dataNode = {
+                        t: date.getTime(),
+                        y: short_history[key].total.new_deaths
+                    };
+                    returnData.push(dataNode);
+                });
+                
+                return returnData;
+                
+            }
+            
+            function getTestsData(keyName) {
+                
+                
+                let returnData = [];
+                Object.keys(short_history).forEach((key) => {
+                    if ( /^\d\d\d\d-/.test(key) === false ) {
+                        //skipping keys that do not look like dates
+                        return;
+                    }
+                    let splitDate = key.split("-");
+                    let date = new Date(splitDate[0], splitDate[1] - 1, splitDate[2]);
+                    let dataNode = {
+                        t: date.getTime(),
+                        y: short_history[key].total_tests[keyName]
+                    };
+                    returnData.push(dataNode);
+                });
+                
+                return returnData;
+                
+            }
+            
+            function getTotalData(keyName) {
+                
+                
+                let returnData = [];
+                Object.keys(short_history).forEach((key) => {
+                    if ( /^\d\d\d\d-/.test(key) === false ) {
+                        //skipping keys that do not look like dates
+                        return;
+                    }
+                    let splitDate = key.split("-");
+                    let date = new Date(splitDate[0], splitDate[1] - 1, splitDate[2]);
+                    let dataNode = {
+                        t: date.getTime(),
+                        y: short_history[key].total[keyName]
+                    };
+                    returnData.push(dataNode);
+                });
+                
+                return returnData;
+                
+            }
+            
+            
+            
+            var ctx = document.getElementById('chart1').getContext('2d');
+            ctx.canvas.width = 1000;
+            ctx.canvas.height = 300;
+            
+            var ctx3 = document.getElementById('chart3').getContext('2d');
+            ctx3.canvas.width = 1000;
+            ctx3.canvas.height = 300;
+            
+            
+            var ctx2 = document.getElementById('chart2').getContext('2d');
+            ctx2.canvas.width = 1000;
+            ctx2.canvas.height = 300;
+            
+            var ctx4 = document.getElementById('chart4').getContext('2d');
+            ctx4.canvas.width = 1000;
+            ctx4.canvas.height = 300;
+            
+            var color = Chart.helpers.color;
+            var cfg = {
+                data: {
+                    datasets: [{
+                        label: 'Deaths',
+                        backgroundColor: color(window.chartColors.red).alpha(0.5).rgbString(),
+                        borderColor: window.chartColors.red,
+                        data: generateData(),
+                        type: 'bar',
+                        pointRadius: 0,
+                        fill: false,
+                        lineTension: 0,
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    animation: {
+                        duration: 0
+                    },
+                    scales: {
+                        xAxes: [{
+                            type: 'time',
+                            time: {
+                                unit: 'day'
+                            },
+                            distribution: 'series',
+                            offset: true,
+                            ticks: {
+                                major: {
+                                    enabled: true,
+                                    fontStyle: 'bold'
+                                },
+                                source: 'data',
+                                autoSkip: true,
+                                autoSkipPadding: 75,
+                                maxRotation: 0,
+                                sampleSize: 1
+                            },
+                        }],
+                        yAxes: [{
+                            gridLines: {
+                                drawBorder: false
+                            },
+                            scaleLabel: {
+                                display: true,
+                                labelString: 'Deaths'
+                            }
+                        }]
+                    },
+                    tooltips: {
+                        intersect: false,
+                        mode: 'index',
+                        callbacks: {
+                            label: function(tooltipItem, myData) {
+                                return `${tooltipItem.value} Deaths`;
+                            }
+                        }
+                    }
+                }
+            };
+            
+            var chart = new Chart(ctx, cfg);
+            
+            var cfg2 = {
+                data: {
+                    datasets: [{
+                        label: 'Positive',
+                        backgroundColor: color(window.chartColors.red).alpha(0.5).rgbString(),
+                        borderColor: window.chartColors.red,
+                        data: getTestsData('new_positive'),
+                        type: 'bar',
+                        pointRadius: 0,
+                        fill: false,
+                        lineTension: 0,
+                        borderWidth: 2
+                    }, {
+                        label: 'Negative',
+                        backgroundColor: color(window.chartColors.green).alpha(0.5).rgbString(),
+                        borderColor: window.chartColors.green,
+                        data: getTestsData('new_negative'),
+                        type: 'bar',
+                        pointRadius: 0,
+                        fill: false,
+                        lineTension: 0,
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    animation: {
+                        duration: 0
+                    },
+                    scales: {
+                        xAxes: [{
+                            type: 'time',
+                            time: {
+                                unit: 'day'
+                            },
+                            distribution: 'series',
+                            offset: true,
+                            ticks: {
+                                major: {
+                                    enabled: true,
+                                    fontStyle: 'bold'
+                                },
+                                source: 'data',
+                                autoSkip: true,
+                                autoSkipPadding: 75,
+                                maxRotation: 0,
+                                sampleSize: 1
+                            },
+                        }],
+                        yAxes: [{
+                            gridLines: {
+                                drawBorder: false
+                            },
+                            scaleLabel: {
+                                display: true,
+                                labelString: 'Tests'
+                            }
+                        }]
+                    },
+                    tooltips: {
+                        intersect: false,
+                        mode: 'index',
+                        callbacks: {
+                            label: function(tooltipItem, myData) {
+                                let label = myData.datasets[tooltipItem.datasetIndex].label || '';
+                                return `${tooltipItem.value} ${label}`;
+                            }
+                        }
+                    }
+                }
+            };
+            
+            var chart2 = new Chart(ctx2, cfg2);
+            
+            var cfg3 = {
+                data: {
+                    datasets: [{
+                        label: 'Total Deaths',
+                        backgroundColor: color(window.chartColors.red).alpha(0.5).rgbString(),
+                        borderColor: window.chartColors.red,
+                        data: getTotalData('deaths'),
+                        type: 'bar',
+                        pointRadius: 0,
+                        fill: false,
+                        lineTension: 0,
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    animation: {
+                        duration: 0
+                    },
+                    scales: {
+                        xAxes: [{
+                            type: 'time',
+                            time: {
+                                unit: 'day'
+                            },
+                            distribution: 'series',
+                            offset: true,
+                            ticks: {
+                                major: {
+                                    enabled: true,
+                                    fontStyle: 'bold'
+                                },
+                                source: 'data',
+                                autoSkip: true,
+                                autoSkipPadding: 75,
+                                maxRotation: 0,
+                                sampleSize: 1
+                            },
+                        }],
+                        yAxes: [{
+                            gridLines: {
+                                drawBorder: false
+                            },
+                            scaleLabel: {
+                                display: true,
+                                labelString: 'Deaths'
+                            }
+                        }]
+                    },
+                    tooltips: {
+                        intersect: false,
+                        mode: 'index',
+                        callbacks: {
+                            label: function(tooltipItem, myData) {
+                                let label = myData.datasets[tooltipItem.datasetIndex].label || '';
+                                return `${tooltipItem.value} ${label}`;
+                            }
+                        }
+                    }
+                }
+            };
+            
+            var chart3 = new Chart(ctx3, cfg3);
+            
+            var cfg4 = {
+                data: {
+                    datasets: [{
+                        label: 'Total Positive',
+                        backgroundColor: color(window.chartColors.red).alpha(0.5).rgbString(),
+                        borderColor: window.chartColors.red,
+                        data: getTestsData('positive'),
+                        type: 'bar',
+                        pointRadius: 0,
+                        fill: false,
+                        lineTension: 0,
+                        borderWidth: 2
+                    }, {
+                        label: 'Total Negative',
+                        backgroundColor: color(window.chartColors.green).alpha(0.5).rgbString(),
+                        borderColor: window.chartColors.green,
+                        data: getTestsData('negative'),
+                        type: 'bar',
+                        pointRadius: 0,
+                        fill: false,
+                        lineTension: 0,
+                        borderWidth: 2
+                    }]
+                },
+                options: {
+                    animation: {
+                        duration: 0
+                    },
+                    scales: {
+                        xAxes: [{
+                            type: 'time',
+                            time: {
+                                unit: 'day'
+                            },
+                            distribution: 'series',
+                            offset: true,
+                            ticks: {
+                                major: {
+                                    enabled: true,
+                                    fontStyle: 'bold'
+                                },
+                                source: 'data',
+                                autoSkip: true,
+                                autoSkipPadding: 75,
+                                maxRotation: 0,
+                                sampleSize: 1
+                            },
+                        }],
+                        yAxes: [{
+                            gridLines: {
+                                drawBorder: false
+                            },
+                            scaleLabel: {
+                                display: true,
+                                labelString: 'Tests'
+                            }
+                        }]
+                    },
+                    tooltips: {
+                        intersect: false,
+                        mode: 'index',
+                        callbacks: {
+                            label: function(tooltipItem, myData) {
+                                let label = myData.datasets[tooltipItem.datasetIndex].label || '';
+                                return `${tooltipItem.value} ${label}`;
+                            }
+                        }
+                    }
+                }
+            };
+            
+            var chart4 = new Chart(ctx4, cfg4);
+            
+            document.getElementById('update').addEventListener('click', function() {
+                var type = document.getElementById('type').value;
+                var dataset = chart.config.data.datasets[0];
+                dataset.type = type;
+                dataset.data = generateData();
+                
+                var dataset2 = chart2.config.data.datasets[0];
+                dataset2.type = type;
+                dataset2.data = getTestsData('new_positive');
+                
+                var dataset3 = chart2.config.data.datasets[1];
+                dataset3.type = type;
+                dataset3.data = getTestsData('new_negative');
+                
+                
+                var dataset4 = chart3.config.data.datasets[0];
+                dataset4.type = type;
+                dataset4.data = getTotalData('deaths');
+                
+                chart.update();
+                chart2.update();
+                chart3.update();
+            });});
+            
+            
+        </script>
+    </body>
+    
+    </html>
+    
+    
