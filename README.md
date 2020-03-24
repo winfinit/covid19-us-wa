@@ -10,6 +10,8 @@ daily by WADOH and history is incorporated within few hours of the published rep
 
 Data is retrieved daily from https://www.doh.wa.gov/emergencies/coronavirus
 
+Historic visualization of the dataset is on the projects page: https://winfinit.github.io/covid19-us-wa/
+
 ## Methods
 
 #### getCurrentData()
