@@ -535,10 +535,19 @@
                 var dataset4 = chart3.config.data.datasets[0];
                 dataset4.type = type;
                 dataset4.data = getTotalData('deaths');
+
+                var dataset5 = chart4.config.data.datasets[0];
+                dataset5.type = type;
+                dataset5.data = getTestsData('positive');
+
+                var dataset6 = chart4.config.data.datasets[1];
+                dataset6.type = type;
+                dataset6.data = getTestsData('negative');
                 
                 chart.update();
                 chart2.update();
                 chart3.update();
+                chart4.update();
             });});
             
             
