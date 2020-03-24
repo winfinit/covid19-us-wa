@@ -5,7 +5,8 @@
 ## What is covid19-us-wa?
 
 "covid19-us-wa" is a library that retrieves current published COVID-19 data from 
-the Washington State Department of Health website. Data is starting March 11, 2020. Data is not updated daily but history will be blank if no update is provided on that particular date.
+the Washington State Department of Health website. Data is starting March 11, 2020. Data source is updated
+daily by WADOH and history is incorporated within few hours of the published report. 
 
 Data is retrieved daily from https://www.doh.wa.gov/emergencies/coronavirus
 
@@ -35,24 +36,31 @@ covid19USWA.getCurrentData().then(data => {
     console.log("data", data);
     /*
         Sample output: 
-        { county:
-            { Clark: { positive: 1, deaths: 0 },
-                Grant: { positive: 1, deaths: 1 },
-                Island: { positive: 1, deaths: 0 },
-                Jefferson: { positive: 1, deaths: 0 },
-                King: { positive: 236, deaths: 26 },
-                Kitsap: { positive: 2, deaths: 0 },
-                Kittitas: { positive: 2, deaths: 0 },
-                Pierce: { positive: 17, deaths: 0 },
-                Skagit: { positive: 1, deaths: 0 },
-                Snohomish: { positive: 68, deaths: 2 },
-                Thurston: { positive: 1, deaths: 0 },
-                Whatcom: { positive: 1, deaths: 0 },
-                Unassigned: { positive: 36, deaths: 0 } },
-            total: { positive: 366, deaths: 29 },
-            total_tests: { positive: 366, negative: 3037 },
-            last_updated: '03/11/2020 2:25PM PDT' 
-        }
+            {
+                "county":{
+                    "Clark":{
+                        "positive":1,
+                        "deaths":0
+                    },
+                    "Grant":{
+                        "positive":1,
+                        "deaths":1
+                    }
+                },
+                "total":{
+                    "positive":366,
+                    "deaths":29,
+                    "new_positive":33,
+                    "new_deaths":1
+                },
+                "total_tests":{
+                    "positive":366,
+                    "negative":3037,
+                    "new_positive":11,
+                    "new_negative":44
+                },
+                "last_updated":"2020-03-23T07:00:00.000Z"
+            }
     */
 });
 
@@ -60,25 +68,33 @@ covid19USWA.getHistoryData().then(data => {
     console.log("data", data);
     /* 
         Sample output:
-        { '03/11/2020':
-            { county:
-                { Clark: { positive: 1, deaths: 0 },
-                    Grant: [{ positive: 1, deaths: 0 },
-                    Island: { positive: 1, deaths: 0 },
-                    Jefferson: { positive: 1, deaths: 0 },
-                    King: { positive: 1, deaths: 0 },
-                    Kitsap: { positive: 1, deaths: 0 },
-                    Kittitas: { positive: 1, deaths: 0 },
-                    Pierce: { positive: 1, deaths: 0 },
-                    Skagit: { positive: 1, deaths: 0 },
-                    Snohomish: { positive: 1, deaths: 0 },
-                    Thurston: { positive: 1, deaths: 0 },
-                    Whatcom: { positive: 1, deaths: 0 },
-                    Unassigned: { positive: 1, deaths: 0 }, },
-                total: { positive: 366, deaths: 29 },
-                total_tests: { positive: 366, negative: 3037 } },
-            last_updated: '03/11/2020 2:25PM PDT' 
-        }
+            {
+                "03/11/2020":{
+                    "county":{
+                        "Clark":{
+                            "positive":1,
+                            "deaths":0
+                        },
+                        "Grant":{
+                            "positive":1,
+                            "deaths":0
+                        }
+                    },
+                    "total":{
+                        "positive":366,
+                        "deaths":29,
+                        "new_positive":33,
+                        "new_deaths":1
+                    },
+                    "total_tests":{
+                        "positive":366,
+                        "negative":3037,
+                        "new_positive":11,
+                        "new_negative":44
+                    },
+                    "last_updated":"2020-03-23T07:00:00.000Z"
+                }
+            }
     */
 });
 
@@ -86,12 +102,22 @@ covid19USWA.getShortHistoryData().then(data => {
     console.log("data", data);
     /* 
         Sample output:
-        { '03/11/2020':
-            {
-                total: { positive: 366, deaths: 29 },
-                total_tests: { positive: 366, negative: 3037 } },
-            last_updated: '03/11/2020 2:25PM PDT' 
+    {
+        "2020-03-23": {
+            "total": {
+                "positive": 2221,
+                "deaths": 110,
+                "new_deaths": 15,
+                "new_positive": 225
+            },
+            "total_tests": {
+                "negative": 31712,
+                "positive": 2221,
+                "new_positive": 225,
+                "new_negative": 2833
+            }
         }
+    }
     */
 });
 ```
