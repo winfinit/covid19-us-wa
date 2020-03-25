@@ -11,6 +11,17 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.3"></script>
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"   integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="   crossorigin="anonymous"></script>
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=UA-161807624-1"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        
+        gtag('config', 'UA-161807624-1');
+    </script>
+    
+    
     <script>
         'use strict';
         
@@ -160,7 +171,7 @@
             
         }(this));      
         $.getJSON('https://nlt-other.s3.amazonaws.com/short_history.json', function(short_history) {
-
+            
             // update total spans
             let lastUpdatedDate = short_history.last_updated.match(/(\d\d\d\d-\d\d-\d\d)/);
             let lastKey = lastUpdatedDate[1];
@@ -168,7 +179,7 @@
             $("#positiveTests").text(short_history[lastKey].total_tests.positive);
             $("#negativeTests").text(short_history[lastKey].total_tests.negative);
             $("#totalTests").text(short_history[lastKey].total_tests.negative + short_history[lastKey].total_tests.positive);
-
+            
             function generateData() {
                 
                 
@@ -544,11 +555,11 @@
                 var dataset4 = chart3.config.data.datasets[0];
                 dataset4.type = type;
                 dataset4.data = getTotalData('deaths');
-
+                
                 var dataset5 = chart4.config.data.datasets[0];
                 dataset5.type = type;
                 dataset5.data = getTestsData('positive');
-
+                
                 var dataset6 = chart4.config.data.datasets[1];
                 dataset6.type = type;
                 dataset6.data = getTestsData('negative');
@@ -626,35 +637,35 @@
                                 <div class="feature-inner">
                                     <h3 class="feature-title">New Deaths</h3>
                                 </div>
-                                    <canvas id="chart1"></canvas>
-
+                                <canvas id="chart1"></canvas>
+                                
                             </div>
                             <hr/>
                             <div class="features-wrap">
                                 <div class="feature-inner">
                                     <h3 class="feature-title">Total Deaths</h3>
                                 </div>
-                                    <canvas id="chart3"></canvas>
-                                    <p class="text-sm"><span id="totalDeaths">444</span> deaths as of the last published report</p>
-
+                                <canvas id="chart3"></canvas>
+                                <p class="text-sm"><span id="totalDeaths">444</span> deaths as of the last published report</p>
+                                
                             </div>
                             <hr/>
-
+                            
                             <div class="features-wrap">
                                 <div class="feature-inner">
                                     <h3 class="feature-title">New Tests Results</h3>
-
+                                    
                                 </div>
-                                    <canvas id="chart2"></canvas>
+                                <canvas id="chart2"></canvas>
                             </div>
                             <hr/>
-
+                            
                             <div class="features-wrap">
                                 <div class="feature-inner">
                                     <h3 class="feature-title">Total Tests</h3>
                                 </div>
-                                    <canvas id="chart4"></canvas>
-                                    <p class="text-sm">Total tests as of the last published report<br>Positive <span id="positiveTests">555</span></span>&nbsp;&nbsp;|&nbsp;&nbsp;Negative <span id="negativeTests">444</span>&nbsp;&nbsp;|&nbsp;&nbsp;Total <span id="totalTests">444</span></p>
+                                <canvas id="chart4"></canvas>
+                                <p class="text-sm">Total tests as of the last published report<br>Positive <span id="positiveTests">555</span></span>&nbsp;&nbsp;|&nbsp;&nbsp;Negative <span id="negativeTests">444</span>&nbsp;&nbsp;|&nbsp;&nbsp;Total <span id="totalTests">444</span></p>
                             </div>
                             
                             <div class="features-wrap">
@@ -747,22 +758,22 @@
                     </div>
                 </section>
                 
-                    <section class="newsletter section">
-                        <div class="container-sm">
-                            <div class="newsletter-inner section-inner">
-                                <div class="newsletter-header text-center is-revealing">
-                                    <p class="section-paragraph">Information is captured from Washington State Department of Health</p>
+                <section class="newsletter section">
+                    <div class="container-sm">
+                        <div class="newsletter-inner section-inner">
+                            <div class="newsletter-header text-center is-revealing">
+                                <p class="section-paragraph">Information is captured from Washington State Department of Health</p>
+                            </div>
+                            <div class="footer-form newsletter-form field field-grouped is-revealing">
+                                <div class="control control-expanded">
+                                    <a class="button button-primary button-block button-shadow" href="https://www.doh.wa.gov/emergencies/coronavirus">doh.wa.gov</a>
                                 </div>
-                                <div class="footer-form newsletter-form field field-grouped is-revealing">
-                                    <div class="control control-expanded">
-                                        <a class="button button-primary button-block button-shadow" href="https://www.doh.wa.gov/emergencies/coronavirus">doh.wa.gov</a>
-                                    </div>
-                                    <div class="control">
-                                    </div>
+                                <div class="control">
                                 </div>
                             </div>
                         </div>
-                    </section>
+                    </div>
+                </section>
                 
             </main>
             
@@ -803,7 +814,7 @@
                             </li>
                         </ul>
                         <ul class="footer-social-links list-reset">
-
+                            
                             <li>
                                 <a href="http://twitter.com/winfinit">
                                     <span class="screen-reader-text">Twitter</span>
@@ -812,7 +823,7 @@
                                     </svg>
                                 </a>
                             </li>
-
+                            
                         </ul>
                         <div class="footer-copyright">&copy; 2020 Winfinit, all rights reserved</div>
                     </div>
