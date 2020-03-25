@@ -160,6 +160,15 @@
             
         }(this));      
         $.getJSON('https://nlt-other.s3.amazonaws.com/short_history.json', function(short_history) {
+
+            // update total spans
+            let lastUpdatedDate = short_history.last_updated.match(/(\d\d\d\d-\d\d-\d\d)/);
+            let lastKey = lastUpdatedDate[1];
+            $("#totalDeaths").text(short_history[lastKey].total.deaths);
+            $("#positiveTests").text(short_history[lastKey].total_tests.positive);
+            $("#negativeTests").text(short_history[lastKey].total_tests.negative);
+            $("#totalTests").text(short_history[lastKey].total_tests.negative + short_history[lastKey].total_tests.positive);
+
             function generateData() {
                 
                 
@@ -626,6 +635,8 @@
                                     <h3 class="feature-title">Total Deaths</h3>
                                 </div>
                                     <canvas id="chart3"></canvas>
+                                    <p class="text-sm"><span id="totalDeaths">444</span> deaths as of the last published report</p>
+
                             </div>
                             <hr/>
 
@@ -643,6 +654,7 @@
                                     <h3 class="feature-title">Total Tests</h3>
                                 </div>
                                     <canvas id="chart4"></canvas>
+                                    <p class="text-sm">Total tests as of the last published report<br>Positive <span id="positiveTests">555</span></span>&nbsp;&nbsp;|&nbsp;&nbsp;Negative <span id="negativeTests">444</span>&nbsp;&nbsp;|&nbsp;&nbsp;Total <span id="totalTests">444</span></p>
                             </div>
                             
                             <div class="features-wrap">
